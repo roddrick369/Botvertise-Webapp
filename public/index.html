@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Visualize o anúncio</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background: #f0f2f5;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      button {
+        padding: 10px 20px;
+        background: #0088cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      Telegram.WebApp.ready();
+
+      function enviarLink() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const link = urlParams.get("l");
+
+        if (!link) {
+          alert("Erro: Nenhum link encontrado.");
+          return;
+        }
+
+        const dataToSend = JSON.stringify({
+          type: "link_original",
+          url: link
+        });
+
+        console.log("📩 Enviando dados:", dataToSend);
+        Telegram.WebApp.sendData(dataToSend);
+
+        // Aguarda 2000ms antes de fechar
+        setTimeout(() => {
+          console.log("🚪 Fechando MiniApp...");
+          Telegram.WebApp.close();
+        }, 2000);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>🎥 Anúncio Concluído!</h1>
+    <p>Clique no botão abaixo para receber o link original no chat:</p>
+    <button onclick="enviarLink()">📩 Receber Link</button>
+  </body>
+</html>
