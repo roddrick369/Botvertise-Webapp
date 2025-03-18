@@ -75,6 +75,9 @@
 
         setTimeout(() => Telegram.WebApp.close(), 2000);
       }
+      
+      // 🔥 Corrige o erro: torna a função global
+      window.enviarLink = enviarLink;
     </script>
   </head>
   <body>
