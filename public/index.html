@@ -21,31 +21,54 @@
         cursor: pointer;
       }
     </style>
-    <script>
-      Telegram.WebApp.ready();
+    <!-- Importar Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
 
-      function enviarLink() {
+      // 🔥 🔥 🔥 Cole as credenciais copiadas do Firebase aqui:
+      const firebaseConfig = {
+        apiKey: "SUA_API_KEY",
+        authDomain: "SEU_PROJETO.firebaseapp.com",
+        projectId: "SEU_PROJETO",
+        storageBucket: "SEU_PROJETO.appspot.com",
+        messagingSenderId: "SENDER_ID",
+        appId: "APP_ID"
+      };
+
+      // Inicializar Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      async function enviarLink() {
         const urlParams = new URLSearchParams(window.location.search);
-        const link = urlParams.get("l");
+        const linkId = urlParams.get("l");
 
-        if (!link) {
+        if (!linkId) {
           alert("Erro: Nenhum link encontrado.");
           return;
         }
 
-        const dataToSend = JSON.stringify({
-          type: "link_original",
-          url: link
-        });
+        try {
+          // Buscar link original no Firebase
+          const docRef = doc(db, "links", linkId);
+          const docSnap = await getDoc(docRef);
 
-        console.log("📩 Enviando dados:", dataToSend);
-        Telegram.WebApp.sendData(dataToSend);
+          if (docSnap.exists()) {
+            const originalLink = docSnap.data().url;
+            Telegram.WebApp.sendData(JSON.stringify({
+              type: "link_original",
+              url: originalLink
+            }));
+          } else {
+            alert("Erro: Link não encontrado.");
+          }
+        } catch (error) {
+          console.error("Erro ao buscar link do Firebase:", error);
+          alert("Erro ao buscar o link.");
+        }
 
-        // Aguarda 2000ms antes de fechar
-        setTimeout(() => {
-          console.log("🚪 Fechando MiniApp...");
-          Telegram.WebApp.close();
-        }, 2000);
+        setTimeout(() => Telegram.WebApp.close(), 2000);
       }
     </script>
   </head>
