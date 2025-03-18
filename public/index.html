@@ -57,6 +57,10 @@
 
           if (docSnap.exists()) {
             const originalLink = docSnap.data().url;
+
+            // 🔥 Exibir o link antes de enviar ao bot (teste)
+            alert(`Enviando link: ${originalLink}`);
+            
             Telegram.WebApp.sendData(JSON.stringify({
               type: "link_original",
               url: originalLink
