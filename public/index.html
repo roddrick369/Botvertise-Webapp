@@ -43,8 +43,7 @@
       const db = getFirestore(app);
 
       async function enviarLink() {
-        const urlParams = new URLSearchParams(window.Telegram.WebApp.initData);
-        const linkId = urlParams.get("startapp");
+        const linkId = window.Telegram.WebApp.initDataUnsafe.start_param;
 
         if (!linkId) {
           alert("Erro: Nenhum link encontrado.");
